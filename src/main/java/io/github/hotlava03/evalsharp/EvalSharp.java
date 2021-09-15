@@ -8,6 +8,5 @@ public final class EvalSharp extends JavaPlugin {
     public void onEnable() {
         this.getCommand("eval").setTabCompleter(new EvalTabCompleter());
         this.getCommand("eval").setExecutor(new EvalCommand(this));
-        this.getLogger().info("EvalSharp successfully started!");
     }
 }

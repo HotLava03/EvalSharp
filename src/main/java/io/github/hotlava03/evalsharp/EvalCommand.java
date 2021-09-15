@@ -10,8 +10,7 @@ import javax.script.ScriptEngine;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-public class EvalCommand implements CommandExecutor {
-    private final EvalSharp plugin;
+public record EvalCommand(EvalSharp plugin) implements CommandExecutor {
     // Default imports for the eval.
     private static final String[] DEFAULT_IMPORTS = {
             "org.bukkit",
@@ -28,10 +27,6 @@ public class EvalCommand implements CommandExecutor {
             "java.time",
             "java.awt"
     };
-
-    public EvalCommand(EvalSharp plugin) {
-        this.plugin = plugin;
-    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
