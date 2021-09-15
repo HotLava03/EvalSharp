@@ -103,6 +103,11 @@ public record EvalCommand(EvalSharp plugin) implements CommandExecutor {
 
         // Send the result as message.
         sender.sendMessage(message);
+
+        // Reset autocomplete.
+        String playerName = "@console";
+        if (sender instanceof Player p) playerName = p.getName();
+        plugin.getTabCompleter().resetAutocompleteForPlayer(playerName);
         return true;
     }
 }
