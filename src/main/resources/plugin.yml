@@ -1,0 +1,14 @@
+name: EvalSharp
+version: '1.0-SNAPSHOT'
+main: io.github.hotlava03.evalsharp.EvalSharp
+api-version: '1.13'
+authors: [HotLava03]
+description: Evaluate java code in-game
+website: hotlava03.github.io
+commands:
+  eval:
+    description: Execute the eval
+permissions:
+  evalsharp.eval:
+    description: Evaluate code with /eval
+    default: op
