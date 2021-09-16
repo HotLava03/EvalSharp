@@ -1,9 +1,12 @@
 package io.github.hotlava03.evalsharp;
 
+import groovy.lang.Closure;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Consumer;
 import org.codehaus.groovy.jsr223.GroovyScriptEngineImpl;
 
 import javax.script.ScriptEngine;
@@ -67,6 +70,18 @@ public record EvalCommand(EvalSharp plugin) implements CommandExecutor {
         engine.put("label", label);
         engine.put("args", args);
         engine.put("plugin", plugin);
+
+        // Helper closures.
+        engine.put("async", new Closure<Runnable>(this) {
+            public void doCall(Runnable runnable) {
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
+            }
+        });
+        engine.put("sync", new Closure<Runnable>(this) {
+            public void doCall(Runnable runnable) {
+                Bukkit.getScheduler().runTask(plugin, runnable);
+            }
+        });
 
         // Set output/error writers.
         StringWriter out = new StringWriter();
