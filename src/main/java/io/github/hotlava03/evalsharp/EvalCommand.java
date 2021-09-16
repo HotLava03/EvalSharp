@@ -57,9 +57,8 @@ public record EvalCommand(EvalSharp plugin) implements CommandExecutor {
         ScriptEngine engine = new GroovyScriptEngineImpl();
 
         // Add variables with external values to the eval runtime.
-        if (sender instanceof Player) {
+        if (sender instanceof Player player) {
             // Additional shortcuts if the one running this is a player.
-            Player player = (Player) sender;
             engine.put("player", player);
             engine.put("location", player.getLocation());
             engine.put("world", player.getWorld());
@@ -84,21 +83,21 @@ public record EvalCommand(EvalSharp plugin) implements CommandExecutor {
         });
 
         // Set output/error writers.
-        StringWriter out = new StringWriter();
-        PrintWriter outWriter = new PrintWriter(out);
+        var out = new StringWriter();
+        var outWriter = new PrintWriter(out);
         engine.getContext().setWriter(outWriter);
-        StringWriter error = new StringWriter();
-        PrintWriter errorWriter = new PrintWriter(error);
+        var error = new StringWriter();
+        var errorWriter = new PrintWriter(error);
         engine.getContext().setErrorWriter(errorWriter);
 
         // Format default imports.
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
         for (String packageImport : DEFAULT_IMPORTS) {
             sb.append("import ").append(packageImport).append(".*;");
         }
 
         // Final code to eval.
-        String toEval = sb + String.join(" ", args);
+        var toEval = sb + String.join(" ", args);
 
         // Eval.
         Object res = null;
@@ -109,7 +108,7 @@ public record EvalCommand(EvalSharp plugin) implements CommandExecutor {
         }
 
         // Message to send to the player.
-        String message = "";
+        var message = "";
 
         // Distinguish result from output from errors.
         if (res != null) message += "\u00a7aResult \u00a78\u00BB \u00a77" + res.toString() + "\n";
@@ -120,7 +119,7 @@ public record EvalCommand(EvalSharp plugin) implements CommandExecutor {
         sender.sendMessage(message);
 
         // Reset autocomplete.
-        String playerName = "@console";
+        var playerName = "@console";
         if (sender instanceof Player p) playerName = p.getName();
         plugin.getTabCompleter().resetAutocompleteForPlayer(playerName);
         return true;

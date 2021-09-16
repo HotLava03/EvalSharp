@@ -50,37 +50,35 @@ public class EvalTabCompleter implements TabCompleter {
         if (args.length == 0) resetAutocompleteForPlayer(playerName);
 
         // Get the last argument.
-        String lastArg = args.length != 0 ? args[args.length - 1] : "";
+        var lastArg = args.length != 0 ? args[args.length - 1] : "";
         // Get the last character.
-        char lastChar = lastArg.isEmpty() ? ' ' : lastArg.charAt(lastArg.length() - 1);
+        var lastChar = lastArg.isEmpty() ? ' ' : lastArg.charAt(lastArg.length() - 1);
         if (lastChar != '.' && lastChar != ' ' && lastArg.contains(".")) {
             // Split calls.
-            String[] elements = lastArg.split("\\.");
+            var elements = lastArg.split("\\.");
             // Get the variable.
-            String variable = elements[elements.length - 2];
+            var variable = elements[elements.length - 2];
 
             if (POSSIBLE_VARIABLES.containsKey(variable)) {
-                System.out.println("IT'S A VARIABLE WE KNOW");
 
-                Map<String, Class<?>> el = POSSIBLE_VARIABLES.getOrDefault(variable, Collections.emptyMap());
+                var el = POSSIBLE_VARIABLES.getOrDefault(variable, Collections.emptyMap());
 
-                List<Map.Entry<String, Class<?>>> toReturn = el.entrySet().stream()
+                var toReturn = el.entrySet().stream()
                         .filter(entry -> {
                             String[] currElements = entry.getKey().split("\\.");
                             return currElements[currElements.length - 1]
                                     .startsWith(elements[elements.length - 1]);
                         }).collect(Collectors.toList());
                 if (toReturn.size() == 1) {
-                    Map.Entry<String, Class<?>> entry = toReturn.get(0);
+                    var entry = toReturn.get(0);
                     lastCallsPerUser.put(playerName, getAllFieldsAndMethods(entry.getKey(), entry.getValue()));
                 }
 
                 return toReturn.stream().map(Map.Entry::getKey).toList();
             } else if (lastCallsPerUser.containsKey(playerName)) {
-                System.out.println("IT'S SOMETHING RANDOM");
-                Map<String, Class<?>> el = lastCallsPerUser.get(playerName);
+                var el = lastCallsPerUser.get(playerName);
 
-                List<Map.Entry<String, Class<?>>> toReturn = el.entrySet().stream()
+                var toReturn = el.entrySet().stream()
                         .filter(entry -> {
                             String[] currElements = entry.getKey().split("\\.");
                             return currElements[currElements.length - 1]
@@ -88,7 +86,7 @@ public class EvalTabCompleter implements TabCompleter {
                         }).collect(Collectors.toList());
 
                 if (toReturn.size() == 1) {
-                    Map.Entry<String, Class<?>> entry = toReturn.get(0);
+                    var entry = toReturn.get(0);
                     lastCallsPerUser.put(playerName, getAllFieldsAndMethods(entry.getKey(), entry.getValue()));
                 }
 
@@ -98,7 +96,7 @@ public class EvalTabCompleter implements TabCompleter {
             // Split calls.
             String lastElement = lastArg.substring(0, lastArg.length() - 1);
 
-            Map<String, Class<?>> autocomplete = POSSIBLE_VARIABLES.get(lastElement);
+            var autocomplete = POSSIBLE_VARIABLES.get(lastElement);
             if (autocomplete == null || lastCallsPerUser.containsKey(playerName)) {
                 return lastCallsPerUser.getOrDefault(playerName, Collections.emptyMap()).keySet().stream().toList();
             } else {
@@ -129,11 +127,11 @@ public class EvalTabCompleter implements TabCompleter {
 
     private static Map<String, Class<?>> getAllFieldsAndMethods(String varName, Class<?> clazz) {
         Map<String, Class<?>> fieldsAndMethods = new HashMap<>();
-        for (Field field : clazz.getDeclaredFields()) {
+        for (var field : clazz.getDeclaredFields()) {
             if (Modifier.isPublic(field.getModifiers()))
                 fieldsAndMethods.put(varName + "." + field.getName(), field.getType());
         }
-        for (Method method : clazz.getDeclaredMethods()) {
+        for (var method : clazz.getDeclaredMethods()) {
             if (Modifier.isPublic(method.getModifiers()))
                 fieldsAndMethods.put(varName + "." + method.getName() + "()", method.getReturnType());
         }
